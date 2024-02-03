@@ -14,7 +14,7 @@ pipeline {
     }
     environment { 
         packageVersion = ''
-        nexusURL = '172.31.80.58:8081' //Mention your Nexus Url
+        nexusURL = '44.210.142.46:8081' //Mention your Nexus Url
     }
     options {
         timeout(time: 1, unit: 'HOURS')
@@ -56,7 +56,7 @@ pipeline {
                     groupId: 'com.roboshop',
                     version: "${packageVersion}",
                     repository: 'catalogue',
-                    credentialsId: 'Nexus_credentials', //Configure the Nexus credentials in jenkins
+                    credentialsId: 'Nexus_credentials', //Configure the Nexus credentials in jenkins and name it here
                     artifacts: [
                         [artifactId: 'catalogue',
                         classifier: '',
@@ -74,7 +74,7 @@ pipeline {
                             string(name: 'environment', value: "dev")
                         ]
                         build job: "catalogue-deploy", wait: true, parameters: params //Build job is to pass version & environment to catalogue-downstream server.
-                    }
+                    }               //catalogue-deploy is a pipeline name
             }
         }
      }
