@@ -1,4 +1,4 @@
-//Angent should have Java,Terrafrom,Aws cli,node js
+//Angent should have Java,Terrafrom,Aws cli,node js, VPN sg group should be attached to Agent to connect to the catalogue because Agent has to connect to the catalogue server but cataloufe is accepting connection from VPN.
 //The below stages are for Continues Integration process
 //Stage-01 Get the version of the aplication.While doing the developments the application version will change (package.json file line no 3)
 //Stage-02 Install Dependencies 
@@ -73,7 +73,7 @@ pipeline {
                             string(name: 'version', value: "$packageVersion"),
                             string(name: 'environment', value: "dev")
                         ]
-                        build job: "catalogue-deploy", wait: true, parameters: params //Build job is to pass version & environment to catalogue-downstream server.
+                        build job: "catalogue-deploy", wait: true, parameters: params //Build job is to pass version & environment to catalogue-downstream job. This stage will wait till downstream job completes.
                     }               //catalogue-deploy is a pipeline name
             }
         }
