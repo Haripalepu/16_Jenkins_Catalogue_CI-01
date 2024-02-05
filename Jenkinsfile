@@ -1,10 +1,11 @@
-//Angent should have Java,Terrafrom,Aws cli,node js, VPN sg group should be attached to Agent to connect to the catalogue because Agent has to connect to the catalogue server but cataloufe is accepting connection from VPN.
+//Angent should have Java,Terrafrom,Aws cli,node js,& Sonar scanner. VPN sg group should be attached to Agent to connect to the catalogue because Agent has to connect to the catalogue server but cataloufe is accepting connection from VPN.
 //The below stages are for Continues Integration process
 //Stage-01 Get the version of the aplication.While doing the developments the application version will change (package.json file line no 3)
 //Stage-02 Install Dependencies 
-//Stage-03 Build i.e Zip all files(16_Jenkins_Catalogues) and create artifact
-//Stage-04 Push Artifact to Nexus Repo
-//Stage-05 Deploy. To pass the version & environmnet to the downstreat server.
+//Stage-03 Sonar Scanning
+//Stage-04 Build i.e Zip all files(16_Jenkins_Catalogues) and create artifact
+//Stage-05 Push Artifact to Nexus Repo
+//Stage-06 Deploy. To pass the version & environmnet to the downstreat server.
 
 pipeline {
     agent {
@@ -12,14 +13,21 @@ pipeline {
             label 'Agent' //Name of the Agent label 
         }
     }
+
     environment { 
         packageVersion = ''
-        nexusURL = '44.210.142.46:8081' //Mention your Nexus Url
+        nexusURL = '172.31.83.17:8081' //Mention your Nexus Url
     }
+
     options {
         timeout(time: 1, unit: 'HOURS')
         disableConcurrentBuilds()  //It won't allow us to run two builds at a time.
     }
+
+    parameters {
+        booleanParam(name: 'Deploy', defaultValue: false, description: 'Toggle this value')
+    }
+
     // build
     stages {
         stage('Get the version') { 
@@ -35,6 +43,20 @@ pipeline {
             steps {     //Shell commands in pipeline. To run the below command Node Js should be installed in agent.
                 sh """   
                     npm install  
+                """
+            }
+        }
+        stage('Unit Testing') {
+            steps {     
+                sh """   
+                    echo "Unit testing will run here"  
+                """
+            }
+        }
+        stage('Sonar Scanning') { //The below command will read the sonar-project.properties file then it will automatically scans the code and uploads the results to sonarqube console.
+            steps {     
+                sh """   
+                    sonar-scanner  
                 """
             }
         }
@@ -67,6 +89,11 @@ pipeline {
             }
         }
         stage('Deploy') {
+            when {
+                expression{
+                    params.Deploy == 'true' //In parameters the deploy we given as false so if it is true then only this deploy will execute. While doing CI testing it is not necessary to do CD evreytime.
+                }
+            }
             steps {
                 script {
                         def params = [
