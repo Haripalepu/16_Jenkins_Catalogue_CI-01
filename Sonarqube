@@ -1,0 +1,3 @@
+sonar.projectKey=catalogue #With this name the results will display in sonarqube console. 
+sonar.qualitygate.wait=true #It will wait for the scanning results if it is failed based on the quality gate conditions then the pipleline will fail.
+sonar.exclusions=node_modules** #To exclude the files from scanning
