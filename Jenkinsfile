@@ -89,10 +89,10 @@ pipeline {
             }
         }
         stage('Deploy') {
-            when {
-                expression{
-                    params.Deploy == 'true' //In parameters the deploy we given as false so if it is true then only this deploy will execute. While doing CI testing it is not necessary to do CD evreytime.
-                }
+           // when {
+               // expression{
+               //     params.Deploy == 'true' //In parameters the deploy we given as false so if it is true then only this deploy will execute. While doing CI testing it is not necessary to do CD evreytime.
+               // }
             }
             steps {
                 script {
